@@ -1,36 +1,26 @@
 ﻿
 using System;
-using System.ComponentModel;
 using System.Timers;
 
 namespace TestMatchGame
 {
-    class Destroyer : IDisposable
+    class Destroyer
     {
-        public int id       = 0;
-        public int destPosX = 0;
-        public int destPosY = 0;
-        public int destMove = 0;
+        public int id;
+        public int destPosX;
+        public int destPosY;
+        public int destMove;
 
-        public bool forDestroy = false;
-        public bool bombType   = false;
-        public bool bangType   = false;
-        public bool bangShow   = false;
+        public bool forDestroy;
+        public bool bombType;
+        public bool bangType;
+        public bool bangShow;
 
         public  GameBoard eventBoard;
         private Timer     destroyerTimer;
 
-        private int timerTime = 0;
-        private readonly int timerStep = 50;
-
-        private bool disposed = false;
-        private IntPtr handle;
-        private readonly Component component = new Component();
-
-        [System.Runtime.InteropServices.DllImport("Kernel32")]
-        private extern static Boolean CloseHandle(IntPtr handle);
-
-
+        private int timerTime;
+        const int timerStep = 50;
 
         public Destroyer (int posX, int posY, int move, int idind)
         {
@@ -51,13 +41,6 @@ namespace TestMatchGame
                 bangShow = true;
             }
         }
-        
-        ~ Destroyer()
-        {
-            Dispose(false);
-        }
-
-
 
         public void Dispose()
         {
@@ -65,25 +48,7 @@ namespace TestMatchGame
             {
                 destroyerTimer.Dispose();
             }
-
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.disposed == false)
-            {
-                if (disposing)
-                {
-                    component.Dispose();
-                }
-
-                CloseHandle(handle);
-                handle = IntPtr.Zero;
-                disposed = true;
-            }
-        }
-
 
 
         public void DestroyerMoveAction()

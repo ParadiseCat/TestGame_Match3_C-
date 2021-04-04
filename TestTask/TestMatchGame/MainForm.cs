@@ -467,18 +467,15 @@ namespace TestMatchGame
                     gameTimer.Start();
                 }
                 
-                if (indexWidth >= 0 && indexWidth < Settings.ELEMENT_COUNT)
+                if (indexWidth >= 0 && indexWidth < Settings.ELEMENT_COUNT
+                && indexHeight >= 0 && indexHeight < Settings.ELEMENT_COUNT)
                 {
+                    boardValue.GameBoardSetSelect (indexWidth, indexHeight);
+                    PictureBoxRedraw (boardBox, indexWidth, indexHeight);
 
-                    if (indexHeight >= 0 && indexHeight < Settings.ELEMENT_COUNT)
+                    if (boardValue.oldSelectWidth > -1)
                     {
-                        boardValue.GameBoardSetSelect (indexWidth, indexHeight);
-                        PictureBoxRedraw (boardBox, indexWidth, indexHeight);
-
-                        if (boardValue.oldSelectWidth > -1)
-                        {
-                            PictureBoxRedraw (boardBox, boardValue.oldSelectWidth, boardValue.oldSelectHeight);
-                        }
+                        PictureBoxRedraw (boardBox, boardValue.oldSelectWidth, boardValue.oldSelectHeight);
                     }
                 }
             }
@@ -588,6 +585,7 @@ namespace TestMatchGame
             {
                 obj.Tick += new EventHandler(TimerEventGame);
             }
+
             obj.Interval = interval;
 
             if (start == true)
@@ -605,16 +603,16 @@ namespace TestMatchGame
         }
         private void TimerEventGame (object sender, EventArgs e)
         { 
-            if (boardValue.actionMove == true)
+            if (boardValue.actionMove)
             {
                 Settings.ACTION_COUNT++;
 
-                if (boardValue.actionBomb == true)
+                if (boardValue.actionBomb)
                 {
                     boardValue.actionBomb = false;
                     PictureBoxRedraw (boardBox);
                 }
-                else if (boardValue.actionDestroyer == true)
+                else if (boardValue.actionDestroyer)
                 {
                     if (Settings.ACTION_COUNT > Settings.ACTION_DEST)
                     {
@@ -629,23 +627,21 @@ namespace TestMatchGame
                     boardValue.GameBoardAction ();
                     PictureBoxRedraw (boardBox);
                 }
+                else if(boardValue.actionFall == true)
+                {
+                    PictureBoxRedraw (boardBox);
+                    infoBox.Invalidate ();
+                }
                 else
                 {
-                    if(boardValue.actionFall == true)
-                    {
-                        PictureBoxRedraw (boardBox);
-                        infoBox.Invalidate ();
-                    }
-                    else
-                    {
-                        PictureBoxRedraw (boardBox,
-                            boardValue.newSelectWidth, boardValue.newSelectHeight,
-                            boardValue.oldSelectWidth, boardValue.oldSelectHeight);
-                    }
+                    PictureBoxRedraw (boardBox,
+                        boardValue.newSelectWidth, boardValue.newSelectHeight,
+                        boardValue.oldSelectWidth, boardValue.oldSelectHeight);
                 }
             }
 
             Settings.STEP_COUNT++;
+
             if (Settings.STEP_COUNT >= Settings.GAME_FPS)
             {
                 Settings.STEP_COUNT = 0;

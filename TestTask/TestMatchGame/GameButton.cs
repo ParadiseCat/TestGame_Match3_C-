@@ -4,12 +4,12 @@ namespace TestMatchGame
 {
     public class GameButton : Button
     {
-        public int baseWidth  = 0;
-        public int baseHeight = 0;
-        public int centerX    = 0;
-        public int centerY    = 0;
+        public int baseWidth;
+        public int baseHeight;
+        public int centerX;
+        public int centerY ;
 
-        private bool  grow       = false;
+        private bool  grow;
         private float scaleValue = 1f;
 
         private readonly float scaleStep    = 0.01f;
@@ -18,7 +18,7 @@ namespace TestMatchGame
 
         public void ScaleAction ()
         {
-            if (grow == true)
+            if (grow)
             {
                 scaleValue += scaleStep;
 

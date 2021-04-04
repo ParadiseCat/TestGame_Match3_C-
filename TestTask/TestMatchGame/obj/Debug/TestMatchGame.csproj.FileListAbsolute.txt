@@ -26,3 +26,17 @@ D:\Proj-Main\TestTask\TestMatchGame\obj\Debug\TestMatchGame.csproj.CoreCompileIn
 D:\Proj-Main\TestTask\TestMatchGame\obj\Debug\TestMatchGame.csproj.CopyComplete
 D:\Proj-Main\TestTask\TestMatchGame\obj\Debug\TestMatchGame.exe
 D:\Proj-Main\TestTask\TestMatchGame\obj\Debug\TestMatchGame.pdb
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\bin\Debug\TestMatchGame.exe.config
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\bin\Debug\TestMatchGame.exe
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\bin\Debug\TestMatchGame.pdb
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\bin\Debug\EntityFramework.dll
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\bin\Debug\EntityFramework.xml
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\bin\Debug\ru\EntityFramework.resources.dll
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\obj\Debug\TestMatchGame.csprojAssemblyReference.cache
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\obj\Debug\TestMatchGame.MainForm.resources
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\obj\Debug\TestMatchGame.Properties.Resources.resources
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\obj\Debug\TestMatchGame.csproj.GenerateResource.cache
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\obj\Debug\TestMatchGame.csproj.CoreCompileInputs.cache
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\obj\Debug\TestMatchGame.csproj.CopyComplete
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\obj\Debug\TestMatchGame.exe
+D:\PROJECTS\TestGame_Match3_CS\TestTask\TestMatchGame\obj\Debug\TestMatchGame.pdb

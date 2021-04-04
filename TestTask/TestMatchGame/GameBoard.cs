@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TestMatchGame
 {
@@ -23,23 +24,23 @@ namespace TestMatchGame
 
         private int fallingSteps = 0;
 
-        public bool actionMove      = false;
-        public bool actionFall      = false;
-        public bool actionUpdate    = false;
-        public bool actionDestroyer = false;
-        public bool actionBomb      = false;
+        public bool actionMove;
+        public bool actionFall;
+        public bool actionUpdate;
+        public bool actionDestroyer;
+        public bool actionBomb;
 
-        private bool actionReplace = false;
-        private bool actionSuccess = false;
-        private bool canMove       = true;
+        private bool actionReplace;
+        private bool actionSuccess;
+        private bool canMove = true;
 
         public           List<Destroyer> destroyersList = new List<Destroyer>();
         private readonly List<Destroyer> destroyersEnd = new List<Destroyer>();
         private readonly List<Destroyer> destroyersNew = new List<Destroyer>();
 
-        private readonly int boardColorCount = 0;
-        private readonly int boardWidth  = 0;
-        private readonly int boardHeight = 0;
+        private readonly int boardColorCount;
+        private readonly int boardWidth;
+        private readonly int boardHeight;
         private readonly int REMOVED = -1;
         private readonly int STATIC  =  0;
 
@@ -139,24 +140,24 @@ namespace TestMatchGame
         }
         public void GameBoardAction ()
         {
-            if (actionSuccess == true)
+            if (actionSuccess)
             {
                 actionMove    = false;
                 actionSuccess = false;
                 successLoop   = 1;
             }
-            else if (actionReplace == true)
+            else if (actionReplace)
             {
                 GameBoardPiecesChooseReplace (newSelectWidth, newSelectHeight, oldSelectWidth, oldSelectHeight);
 
                 actionMove    = false;
                 actionReplace = false;
             }
-            else if (actionDestroyer == true)
+            else if (actionDestroyer)
             {
                 GameBoardDestroyerStepMove ();
             }
-            else if (actionFall == true)
+            else if (actionFall)
             {
                 if (fallingSteps > 0)
                 {
@@ -170,9 +171,9 @@ namespace TestMatchGame
                     successLoop += 1;
                     GameBoardPiecesMoveStepDown ();
 
-                    if (GameBoardCheck (false) == true)
+                    if (GameBoardCheck (false))
                     {
-                        if (actionDestroyer == true)
+                        if (actionDestroyer)
                         {
                             GameBoardValuesSetDefault (movingValues, STATIC);
                             GameBoardDestroyerStepMove ();
@@ -193,7 +194,7 @@ namespace TestMatchGame
 
                         canMove = GameBoardPiecesCanMove();
 
-                        if (canMove == false)
+                        if (! canMove)
                         {
                             GameBoardReinit();
                         }
@@ -204,11 +205,11 @@ namespace TestMatchGame
             {
                 GameBoardPiecesChooseReplace(newSelectWidth, newSelectHeight, oldSelectWidth, oldSelectHeight);
 
-                if (GameBoardCheck (false) == true)
+                if (GameBoardCheck (false))
                 {
                     actionFall = true;
 
-                    if (actionDestroyer == true)
+                    if (actionDestroyer)
                     {
                         GameBoardValuesSetDefault (movingValues, STATIC);
                         GameBoardDestroyerStepMove ();
@@ -268,7 +269,7 @@ namespace TestMatchGame
 
             canMove = GameBoardPiecesCanMove ();
 
-            if (canMove == false)
+            if (! canMove)
             {
                 GameBoardReinit ();
             }
@@ -277,7 +278,7 @@ namespace TestMatchGame
         }
         private void GameBoardReinit ()
         {
-            while (canMove == false)
+            while (! canMove)
             {
                 GameBoardValuesSetDefault (
                     boardValues, REMOVED,
@@ -285,7 +286,7 @@ namespace TestMatchGame
 
                 GameBoardPiecesRandomAdd();
 
-                while (GameBoardCheck (true) == true)
+                while (GameBoardCheck (true))
                 {
                     GameBoardPiecesMoveQuickDown ();
                     GameBoardValuesSetDefault (movingValues, STATIC);
@@ -303,7 +304,7 @@ namespace TestMatchGame
             bool needUpdate = false;
             bool checkSelected = false;
 
-            if (quickMode == true)
+            if (quickMode)
             {
                 // Vertical checking
                 for (int i = 0; i < boardWidth; i++)
@@ -415,7 +416,7 @@ namespace TestMatchGame
                             checkSelected = true;
                         }
 
-                        if (checkSelected == true)
+                        if (checkSelected)
                         {
                             if (select_id > REMOVED && select_count >= Settings.SUCCESS_COUNT)
                             {
@@ -455,7 +456,7 @@ namespace TestMatchGame
                                         }
                                     }
 
-                                    if (set == false)
+                                    if (! set)
                                     {
                                         bonusValues[i, j - 2]  = (int)Settings.Bonus.LineVertical;
                                         removeValues[i, j - 2] = STATIC;
@@ -493,7 +494,7 @@ namespace TestMatchGame
                             checkSelected = true;
                         }
 
-                        if (checkSelected == true)
+                        if (checkSelected)
                         {
                             if (select_id > REMOVED && select_count >= Settings.SUCCESS_COUNT)
                             {
@@ -523,7 +524,7 @@ namespace TestMatchGame
                                     }
                                 }
 
-                                if (findBomb == false)
+                                if (! findBomb)
                                 {
                                     if (select_count >= Settings.BONUS_COUNT)
                                     {
@@ -545,7 +546,7 @@ namespace TestMatchGame
                                             }
                                         }
 
-                                        if (set == false)
+                                        if (! set)
                                         {
                                             bonusValues[i - 2, j]  = (int)Settings.Bonus.LineVertical;
                                             removeValues[i - 2, j] = STATIC;
@@ -679,19 +680,13 @@ namespace TestMatchGame
 
                 for (int j = boardHeight - 1; j >= 0; j--)
                 {
-                    if (shift == true)
+                    if (shift && boardValues[i, j] > REMOVED)
                     {
-                        if (boardValues [i, j] > REMOVED)
-                        {
-                            movingValues [i, j] = (int)Settings.Moving.Down;
-                        }
+                        movingValues [i, j] = (int)Settings.Moving.Down;
                     }
-                    else
+                    else if (boardValues [i, j] == REMOVED)
                     {
-                        if (boardValues [i, j] == REMOVED)
-                        {
-                            shift = true;
-                        }
+                        shift = true;
                     }
                 }
             }
@@ -704,7 +699,7 @@ namespace TestMatchGame
 
                 for (int j = boardHeight - 1; j >= 0; j--)
                 {
-                    if (shift == true)
+                    if (shift)
                     {
                         movingValues[i, j] = STATIC;
 
@@ -719,21 +714,19 @@ namespace TestMatchGame
                             bonusValues[i, j] = bonusValues[i, j - 1];
                         }
                     }
-                    else
+                    else if (boardValues [i, j] == REMOVED)
                     {
-                        if (boardValues [i, j] == REMOVED)
+                        shift = true;
+
+                        if (j == 0)
                         {
-                            shift = true;
-                            if (j == 0)
-                            {
-                                boardValues[i, j] = rand.Next(boardColorCount);
-                                bonusValues[i, j] = STATIC;
-                            }
-                            else
-                            {
-                                boardValues[i, j] = boardValues[i, j - 1];
-                                bonusValues[i, j] = bonusValues[i, j - 1];
-                            }
+                            boardValues[i, j] = rand.Next(boardColorCount);
+                            bonusValues[i, j] = STATIC;
+                        }
+                        else
+                        {
+                            boardValues[i, j] = boardValues[i, j - 1];
+                            bonusValues[i, j] = bonusValues[i, j - 1];
                         }
                     }
                 }
@@ -751,13 +744,10 @@ namespace TestMatchGame
                     {
                         shift++;
                     }
-                    else
+                    else if (shift > 0)
                     {
-                        if (shift > 0)
-                        {
-                            boardValues[i, j + shift] = boardValues[i, j];
-                            boardValues[i, j] = REMOVED;
-                        }
+                        boardValues[i, j + shift] = boardValues[i, j];
+                        boardValues[i, j] = REMOVED;
                     }
                 }
             }
@@ -787,56 +777,26 @@ namespace TestMatchGame
                     {
                         if (i - 1 >= 0)
                         {
-                            if (j + 1 < boardHeight)
+                            if ((j + 1 < boardHeight && boardValues[i - 1, j + 1] == index)
+                            || (j - 2 >= 0 && boardValues[i - 1, j - 2] == index))
                             {
-                                if (boardValues[i - 1, j + 1] == index)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            if (j - 2 >= 0)
-                            {
-                                if (boardValues[i - 1, j - 2] == index)
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                         
                         if (i + 1 < boardWidth)
                         {
-                            if (j + 1 < boardHeight)
-                            {
-                                if (boardValues[i + 1, j + 1] == index)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            if (j - 2 >= 0)
-                            {
-                                if (boardValues[i + 1, j - 2] == index)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        if (j + 2 < boardHeight)
-                        {
-                            if (boardValues[i, j + 2] == index)
+                            if ((j + 1 < boardHeight && boardValues[i + 1, j + 1] == index)
+                            || (j - 2 >= 0 && boardValues[i + 1, j - 2] == index))
                             {
                                 return true;
                             }
                         }
 
-                        if (j - 3 >= 0)
+                        if ((j + 2 < boardHeight && boardValues[i, j + 2] == index)
+                        || (j - 3 >= 0 && boardValues[i, j - 3] == index))
                         {
-                            if (boardValues[i, j - 3] == index)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -859,56 +819,26 @@ namespace TestMatchGame
                     {
                         if (j - 1 >= 0)
                         {
-                            if (i + 1 < boardHeight)
+                            if ((i + 1 < boardHeight && boardValues[j - 1, i + 1] == index)
+                            || (i - 2 >= 0 && boardValues[j - 1, i - 2] == index))
                             {
-                                if (boardValues[j - 1, i + 1] == index)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            if (i - 2 >= 0)
-                            {
-                                if (boardValues[j - 1, i - 2] == index)
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
 
                         if (j + 1 < boardWidth)
                         {
-                            if (i + 1 < boardHeight)
-                            {
-                                if (boardValues[j + 1, i + 1] == index)
-                                {
-                                    return true;
-                                }
-                            }
-
-                            if (i - 2 >= 0)
-                            {
-                                if (boardValues[j + 1, i - 2] == index)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        if (i + 2 < boardHeight)
-                        {
-                            if (boardValues[j, i + 2] == index)
+                            if ((i + 1 < boardHeight && boardValues[j + 1, i + 1] == index)
+                            || (i - 2 >= 0 && boardValues[j + 1, i - 2] == index))
                             {
                                 return true;
                             }
                         }
 
-                        if (i - 3 >= 0)
+                        if ((i + 2 < boardHeight && boardValues[j, i + 2] == index)
+                        || (i - 3 >= 0 && boardValues[j, i - 3] == index))
                         {
-                            if (boardValues[j, i - 3] == index)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
@@ -946,29 +876,25 @@ namespace TestMatchGame
                 {
                     for (var j = y - 1; j <= y + 1; j++)
                     {
-                        if (i != x || j != y)
+                        if (( i != x || j != y )
+                        && j >= 0 && j < boardHeight
+                        && boardValues[i, j] != REMOVED)
                         {
-                            if (j >= 0 && j < boardHeight)
+                            if (bonusValues[i, j] == STATIC)
                             {
-                                if (boardValues[i, j] != REMOVED)
+                                if (GameBoardDestroyerCheckBombExist(i, j) == false)
                                 {
-                                    if (bonusValues[i, j] == STATIC)
-                                    {
-                                        if (GameBoardDestroyerCheckBombExist(i, j) == false)
-                                        {
-                                            destroyerId += 1;
-                                            Destroyer objDest = new Destroyer(i, j, REMOVED, destroyerId);
-                                            destroyersNew.Add(objDest);
-                                        }
-
-                                        removeValues[i, j] = REMOVED;
-                                    }
-                                    else
-                                    {
-                                        GameBoardDestroyersSet(i, j, bonusValues[i, j], destroyersNew);
-                                        bonusValues[i, j] = STATIC;
-                                    }
+                                    destroyerId += 1;
+                                    Destroyer objDest = new Destroyer(i, j, REMOVED, destroyerId);
+                                    destroyersNew.Add(objDest);
                                 }
+
+                                removeValues[i, j] = REMOVED;
+                            }
+                            else
+                            {
+                                GameBoardDestroyersSet(i, j, bonusValues[i, j], destroyersNew);
+                                bonusValues[i, j] = STATIC;
                             }
                         }
                     }
@@ -1050,7 +976,7 @@ namespace TestMatchGame
                 {
                     GameBoardDestroyerStepMoveSetBonus(x, y, obj.destMove);
                 }
-                else if (obj.bombType == false)
+                else if (! obj.bombType)
                 {
                     movingValues [x, y] = STATIC;
                     bonusValues  [x, y] = STATIC;
@@ -1062,7 +988,7 @@ namespace TestMatchGame
                     x = obj.destPosX;
                     y = obj.destPosY;
 
-                    if (obj.DestroyerMoveCheck(0, 0, boardWidth - 1, boardHeight - 1) == true)
+                    if (obj.DestroyerMoveCheck(0, 0, boardWidth - 1, boardHeight - 1))
                     {
                         Settings.SCORE += successLoop;
 
@@ -1078,9 +1004,9 @@ namespace TestMatchGame
                         destroyersEnd.Add(obj);
                     }
                 }
-                else if (obj.bangType == true)
+                else if (obj.bangType)
                 {
-                    if (obj.bangShow == true)
+                    if (obj.bangShow)
                     {
                         obj.bangShow = false;
                     }
@@ -1151,35 +1077,8 @@ namespace TestMatchGame
         }
         private bool GameBoardDestroyerCheckBombExist (int x, int y)
         {
-            foreach (Destroyer objDestList in destroyersNew)
-            {
-                if (objDestList.destPosX == x)
-                {
-                    if (objDestList.destPosY == y)
-                    {
-                        if (objDestList.bombType == true)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            foreach (Destroyer objDestList in destroyersList)
-            {
-                if (objDestList.destPosX == x)
-                {
-                    if (objDestList.destPosY == y)
-                    {
-                        if (objDestList.bombType == true)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
+            var allDestroyers = destroyersNew.Concat(destroyersList);
+            return allDestroyers.Any(d => d.destPosX == x && d.destPosY == y && d.bombType);
         }
     }
 }
